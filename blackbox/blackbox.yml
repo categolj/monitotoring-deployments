@@ -1,0 +1,8 @@
+---
+modules:
+  http:
+    http:
+      tls_config:
+        insecure_skip_verify: true
+    prober: http
+    timeout: 5s

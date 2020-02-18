@@ -1,0 +1,90 @@
+rule_files:
+- /home/vcap/app/rule_files/*.alerts.yml
+scrape_configs:
+- job_name: blackbox
+  metrics_path: /probe
+  scheme: https
+  params:
+    module:
+    - http
+  static_configs:
+  - targets:
+    - https://blog.ik.am
+    - https://blog.ik.am/entries/412
+    - https://blog.ik.am/actuator/health
+    - https://blog-rsocket.ik.am/actuator/health
+    - https://blog-api.ik.am/actuator/health
+    - https://k8s.bosh.tokyo/healthz
+    - https://uaa.bosh.tokyo/info
+    - https://director.dev.bosh.tokyo/info
+    - https://moneygr.ik.am/actuator/health
+    - https://note.ik.am/actuator/health
+    - https://zipkin.dev.ik.am/actuator/health
+  relabel_configs:
+  - source_labels: [__address__]
+    regex: (.*)
+    target_label: __param_target
+    replacement: ${1}
+  - source_labels: [__param_target]
+    regex: (.*)
+    target_label: instance
+    replacement: ${1}
+  - source_labels: []
+    regex: .*
+    target_label: __address__
+    replacement: blackbox.apps.pcfone.io:443
+- job_name: prometheus-proxy-connected
+  scrape_interval: 30s
+  scrape_timeout: 10s
+  metrics_path: /metrics/connected
+  scheme: https
+  static_configs:
+  - targets:
+    - prometheus-proxy.k8s.bosh.tokyo:443
+- job_name: prometheus-proxy
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics/proxy
+  scheme: https
+  static_configs:
+  - targets:
+    - prometheus-proxy.k8s.bosh.tokyo:443
+- job_name: zipkin
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /actuator/prometheus
+  scheme: https
+  static_configs:
+  - targets:
+    - zipkin.dev.ik.am:443
+    labels:
+      organization: maki
+      space: observability
+      application: zipkin
+      instance_id: zipkin:0
+- job_name: jjug-enquete
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /actuator/prometheus
+  scheme: https
+  static_configs:
+  - targets:
+    - jjug-enquete.cfapps.io:443
+    labels:
+      organization: APJ
+      space: production
+      application: jjug-enquete
+      instance_id: jjug-enquete:0
+- job_name: jsug-enquete
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /actuator/prometheus
+  scheme: https
+  static_configs:
+  - targets:
+    - jsug-enquete.cfapps.io:443
+    labels:
+      organization: APJ
+      space: production
+      application: jsug-enquete
+      instance_id: jsug-enquete:0

@@ -1,0 +1,23 @@
+
+groups:
+  - name: ssl
+    rules:
+      - alert: ProbeSSLCertExpiryWarning
+        expr: avg(probe_ssl_earliest_cert_expiry) by(instance) - time() < 604800
+        for: 5m
+        labels:
+          service: probe
+          severity: warning
+        annotations:
+          summary: "Endpoint `{{$labels.instance}}` SSL certificate will expire in {{humanizeDuration $value}}"
+          description: "The SSL certificate at endpoint `{{$labels.instance}}` will expire in {{humanizeDuration $value}}"
+
+      - alert: ProbeSSLCertExpiryCritical
+        expr: avg(probe_ssl_earliest_cert_expiry) by(instance) - time() < 86400
+        for: 5m
+        labels:
+          service: probe
+          severity: critical
+        annotations:
+          summary: "Endpoint `{{$labels.instance}}` SSL certificate will expire in {{humanizeDuration $value}}"
+          description: "The SSL certificate at endpoint `{{$labels.instance}}` will expire in {{humanizeDuration $value}}"

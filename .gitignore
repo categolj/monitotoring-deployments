@@ -1,3 +1,4 @@
 blackbox_exporter-*
 prometheus-*
 grafana-*
+alertmanager-*

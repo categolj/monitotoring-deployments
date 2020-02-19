@@ -1,3 +1,10 @@
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager.apps.pcfone.io:443
+    scheme: https
+    timeout: 10s
 rule_files:
 - /home/vcap/app/rule_files/*.alerts.yml
 scrape_configs:

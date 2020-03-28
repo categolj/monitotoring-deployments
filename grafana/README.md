@@ -1,3 +1,4 @@
+```
 GRAFANA_VERSION=6.6.1
 if [ ! -d grafana-${GRAFANA_VERSION} ];then
     wget https://dl.grafana.com/oss/release/grafana-${GRAFANA_VERSION}.linux-amd64.tar.gz
@@ -16,3 +17,4 @@ wget https://github.com/making/prometheus-kustomize/raw/master/base/grafana/spri
 cp -r provisioning/dashboards/* grafana-${GRAFANA_VERSION}/conf/provisioning/dashboards/
 
 cf push grafana -m 128m -b binary_buildpack -p ./grafana-${GRAFANA_VERSION} --random-route -c "./bin/grafana-server -config=./conf/defaults.ini"
+```
